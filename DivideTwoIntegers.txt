@@ -1,0 +1,64 @@
+Given two integers dividend and divisor, divide two integers without using multiplication, division and mod operator.
+
+Return the quotient after dividing dividend by divisor.
+
+The integer division should truncate toward zero, which means losing its fractional part. For example, truncate(8.345) = 8 and truncate(-2.7335) = -2.
+
+Example 1:
+
+Input: dividend = 10, divisor = 3
+Output: 3
+Explanation: 10/3 = truncate(3.33333..) = 3.
+Example 2:
+
+Input: dividend = 7, divisor = -3
+Output: -2
+Explanation: 7/-3 = truncate(-2.33333..) = -2.
+Note:
+
+Both dividend and divisor will be 32-bit signed integers.
+The divisor will never be 0.
+Assume we are dealing with an environment which could only store integers within the 32-bit signed integer range: [−231,  231 − 1]. For the purpose of this problem, assume that your function returns 231 − 1 when the division result overflows.
+
+class Solution:
+    def divide(self, dividend: int, divisor: int) -> int:
+        
+        # Simple flag to remember to negate the quotient
+        # if either the dividend or divisor are negative.
+        negateResult = False
+        if (dividend < 0) ^ (divisor < 0):
+            negateResult = True
+            
+        # Initialize stuff.
+        quotient = 0
+        dividend, divisor = abs(dividend), abs(divisor)
+        
+        # Our goal is to start from divisor * 2^32 and work
+        # down to some divisor * 2^p where shiftedDivisor < dividend.
+        # Once we know of such a shiftedDivisor, we can
+        # deduct it from the dividend and record the 2^p
+        # as a quotient.
+        shiftedDivisor = divisor << 32
+        
+        # Oh, and this guy here will help us keep track
+        # of the 2^p value that will be added to the quotient.
+        multiplier = 1 << 32
+        
+        # Lets start, until the dividend continues
+        # to remain larger than the divisor.
+        while dividend >= divisor:
+            while shiftedDivisor > dividend:
+                # Too high! Lets make the shiftedDivisor
+                # smaller and try again. Don't forget to
+                # adjust the multiplier that will be added
+                # to the quotient.
+                shiftedDivisor = shiftedDivisor >> 1
+                multiplier = multiplier >> 1
+            
+            # Finally, found a power of 2 that when multiplied
+            # with the divisor is able to shrink the dividend.
+            quotient += multiplier
+            dividend -= shiftedDivisor
+        
+        # You gotta make sure you respect the sign and the bounds.
+        return -quotient if negateResult else min(quotient, 2 ** 31 - 1)

@@ -1,0 +1,32 @@
+Given an array of integers and an integer k,
+ you need to find the total number of continuous subarrays whose sum equals to k.
+
+Example 1:
+
+Input:nums = [1,1,1], k = 2
+Output: 2
+ 
+
+Constraints:
+
+The length of the array is in range [1, 20,000].
+The range of numbers in the array is [-1000, 1000] and the range of the integer k is [-1e7, 1e7].
+
+Video Reference:https://www.youtube.com/watch?v=bqN9yB0vF08
+
+Time Complexity is O(n) since we do all the required operations in one for loop
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        n= len(nums)
+        count= 0
+        d= {0:1}
+        runningSum= 0
+        for i in nums:
+            runningSum+=i
+            if runningSum-k in d:
+                count+=d[runningSum-k]
+            if runningSum in d:
+                d[runningSum]+=1
+            else:
+                d[runningSum]=1
+        return count
