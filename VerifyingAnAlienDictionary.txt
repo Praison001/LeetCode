@@ -1,0 +1,54 @@
+In an alien language, surprisingly they also use english lowercase letters, but possibly in a different order.
+ The order of the alphabet is some permutation of lowercase letters.
+
+Given a sequence of words written in the alien language, and the order of the alphabet, 
+return true if and only if the given words are sorted lexicographicaly in this alien language.
+
+Example 1:
+
+Input: words = ["hello","leetcode"], order = "hlabcdefgijkmnopqrstuvwxyz"
+Output: true
+Explanation: As 'h' comes before 'l' in this language, then the sequence is sorted.
+Example 2:
+
+Input: words = ["word","world","row"], order = "worldabcefghijkmnpqstuvxyz"
+Output: false
+Explanation: As 'd' comes after 'l' in this language, then words[0] > words[1], hence the sequence is unsorted.
+Example 3:
+
+Input: words = ["apple","app"], order = "abcdefghijklmnopqrstuvwxyz"
+Output: false
+Explanation: The first three characters "app" match, and the second string is shorter (in size.) 
+According to lexicographical rules "apple" > "app", because 'l' > '∅', where '∅' is defined as the blank character which is less than any other character (More info).
+ 
+
+Constraints:
+
+1 <= words.length <= 100
+1 <= words[i].length <= 20
+order.length == 26
+All characters in words[i] and order are English lowercase letters.
+
+Time Complexity: O(C), where C is the total content of words.
+
+Space Complexity: O(1).
+
+Hash indexes of each character for better runtime
+Compare every adjacent word
+If any letter of former word is in higher order, return False
+If current letter of former word is in lower order, forget the rest of word
+If lenght of former word is longer and latter word is substring of former, return False (apple & app etc.)
+Return True.
+
+class Solution:
+    def isAlienSorted(self, words, order):
+        ind = {c: i for i, c in enumerate(order)}
+        for a, b in zip(words, words[1:]):
+            if len(a) > len(b) and a[:len(b)] == b:
+                return False
+            for s1, s2 in zip(a, b):
+                if ind[s1] < ind[s2]:
+                    break
+                elif ind[s1] > ind[s2]:
+                    return False
+        return True

@@ -1,0 +1,44 @@
+The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
+
+Given an integer n, return the number of distinct solutions to the n-queens puzzle.
+
+Example:
+
+Input: 4
+Output: 2
+Explanation: There are two distinct solutions to the 4-queens puzzle as shown below.
+[
+ [".Q..",  // Solution 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // Solution 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+
+Video Reference: https://www.youtube.com/watch?v=wGbuCyNpxIg
+https://www.youtube.com/watch?v=LTJupuoL-hY
+
+Similar to backtrackting. Using dfs approach. Simlar to N-Queens, only difference is that the length is returned instead of the list(chessboard). 
+class Solution:
+    def totalNQueens(self, n: int) -> int:
+        res= []
+        res1= []
+        if not n:
+            return []
+        
+        def dfs(queens, xy_diff, xy_sum):
+            p= len(queens)
+            if p==n:
+                res.append(queens)
+            for q in range(n):
+                if q not in queens and p-q not in xy_diff and p+q not in xy_sum:
+                    dfs(queens+[q], xy_diff+[p-q], xy_sum+[p+q])
+        dfs([],[],[])
+        
+        res1+=[["."*i+"Q"+"."*(n-i-1)for i in sol]for sol in res]
+        return len(res1)
+        

@@ -1,0 +1,51 @@
+Given an array nums of n integers and an integer target, are there elements a, b, c, and d in nums such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
+
+Note:
+
+The solution set must not contain duplicate quadruplets.
+
+Example:
+
+Given array nums = [1, 0, -1, 0, -2, 2], and target = 0.
+
+A solution set is:
+[
+  [-1,  0, 0, 1],
+  [-2, -1, 1, 2],
+  [-2,  0, 0, 2]
+]
+
+Video Reference(for explanation):https://www.youtube.com/watch?v=R4tueEVyjDs
+Github Reference(for code):https://github.com/learlinian/Python-Leetcode-Solution/blob/master/18.4Sum.py
+
+Similar to 3 sum but has 4 pointers instead of 3, go through the solution or explanation of 3sum to understand this better.
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        result= []
+        nums.sort()
+        length= len(nums)-1
+        for i in range(length-2):
+            if i>0 and nums[i]==nums[i-1]:
+                continue
+            for j in range(i+1,length-1):
+                if j>i+1 and nums[j]==nums[j-1]:
+                    continue
+                k= j+1
+                l= length
+                while k<l:
+                    total= nums[i]+nums[j]+nums[k]+nums[l]
+                    if total==target:
+                        result.append([nums[i],nums[j],nums[k],nums[l]])
+                        while k<l and nums[k]==nums[k+1]:
+                            k+=1
+                        while k<l and nums[l]==nums[l-1]:
+                            l-=1
+                        k+=1
+                        l-=1
+                    elif total<target:
+                        k+=1
+                    else:
+                        l-=1
+        return result                
+            
+            

@@ -1,0 +1,50 @@
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+For example, given n = 3, a solution set is:
+
+[
+  "((()))",
+  "(()())",
+  "(())()",
+  "()(())",
+  "()()()"
+]
+
+
+This problem can be solved using backtracking and recursion
+
+In case, if you wanna know the difference between recursion and backtracking
+
+In recursion function calls itself until reaches a base case. Recursion also works in DFS
+
+In backtracking you use recursion in order to explore all the possibilities until you get the best result for the problem with certain constraints.
+
+Backtracking is an algorithmic-technique for solving problems recursively by trying to build a solution incrementally, one piece at a time,
+removing those solutions that fail to satisfy the constraints of the problem at any point of time 
+
+Video Reference: https://www.youtube.com/watch?v=sz1qaKt0KGQ
+
+Three keys needs to kept in mind for our backtracking process.
+1. Our Choice
+   In this problem, our choice is whether to place a "(" or ")"
+2. Our Constraints 
+   In this problem, we cannot place a close bracket until we open one
+3. Our Goal
+   In this problem, our goal is we need the length of the final string to be n*2 (n being the input)
+
+Watch the video to get a clear understanding of how the whole thing works.
+
+Space Complexity: O(n)
+
+class Solution:  (code works in DFS)
+    def generateParenthesis(self, n: int) -> List[str]:
+        result= []
+        def backtrack(result,left,right,curr_string):
+            if len(curr_string)==n*2:
+                result.append(curr_string)
+            if left<n:
+                backtrack(result,left+1,right,curr_string+"(")
+            if right<left:
+                backtrack(result,left,right+1,curr_string+")")
+        backtrack(result,0,0,"")
+        return(result)

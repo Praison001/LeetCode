@@ -1,0 +1,54 @@
+Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.
+
+If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
+
+The replacement must be in-place and use only constant extra memory.
+
+Here are some examples.
+Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+
+1,2,3 → 1,3,2
+3,2,1 → 1,2,3
+1,1,5 → 1,5,1
+
+Video Reference: https://www.youtube.com/watch?v=quAS1iydq7U
+https://www.youtube.com/watch?v=9xT2Xzlo4i4
+
+Learn about permutation before diving in to this problem to know what is next permutation.
+
+Time Complexity: O(n)
+Space Complexity: O(1)
+class Solution:
+    def swap(self,nums,ind1,ind2):
+        temp= nums[ind1]
+        nums[ind1]= nums[ind2]
+        nums[ind2]= temp
+        
+    def reverse(self,nums,beg,end):
+        while beg<end:
+            self.swap(nums,beg,end)
+            beg+=1
+            end-=1
+            
+    def nextPermutation(self, nums: List[int]) -> None:
+        if len(nums)==1:
+            return
+        if len(nums)==2:
+            return self.swap(nums,0,1)
+        
+        #reversing takes place here
+        dec= len(nums)-2
+        while dec>=0 and nums[dec]>=nums[dec+1]:
+            dec-=1
+        self.reverse(nums,dec+1,len(nums)-1)
+        if dec==-1:
+            return
+        
+        #swapping takes place here
+        next_num= dec+1
+        while next_num<len(nums) and nums[next_num]<=nums[dec]:
+            next_num+=1
+        self.swap(nums,dec,next_num)
+        return    
+        
+        
