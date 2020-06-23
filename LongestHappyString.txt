@@ -1,0 +1,69 @@
+Observation
+We want to construct the happy string from empty.
+To avoid triplets 'aaa', 'bbb' or 'ccc', any triple consecutives should be interrupted by another character.
+We want to select a different character from {'a','b','c'} as soon as we see there're two consecutive characters already.
+
+Ideas
+In this solution, each loop adds a group of 2~3 characters. A group starts with a 'fence' of 1~2 characters in its front and ends with a single 'wedge' character.
+ The wedge character divides current group from next group.
+Using == to denote the fence and | to denote the wedge, the happy string should resemble the pattern ==| ==| ==|...==| ==.
+For example, when a = 1, b = 1, c = 7，output consists of groups cca ccb cc
+
+Implementation
+The loop consists of the followings elements:
+
+Decide the fence and wedge characters to be placed in current group.
+
+We select the character with the highest remaining count to be the fence, and character with the second highest to be the wedge, thus allowing us to create as many groups as possible.
+Decide whether 1 or 2 fence characters should be used in current group.
+
+Normally, we can place two fence characters (as long as the happy string doesn't contain any triplets after appending current group).
+However, if the wedge from last group happens to be the same as current fence character, only one fence character can be placed.
+For example, suppose from the last iteration a=4,b=4,c=1 we form the group aab with b being the wedge, then in current iteration a=2,b=3,c=1 we can't use b twice to form the new group as bba, 
+since there will be a bbb in the concatenated string aabbba. Instead of bba, only ba is allowed in current group.
+Append current group to the result, and update remaining counts.
+
+Loop until there's no wedge left (so no new group could be formed)
+
+Finally, we want to append remaining fence character, if any, to obtain the longest happy string.
+
+Complexity
+In the "worst" case, we use up all (a+b+c) char allowances to form a valid happy string. There're (a+b+c) updates to the remianing Counter and result list.
+Since each update to remaining and result takes O(1), the time complexity is therefore O(a+b+c).
+Since we need to hold up to (a+b+c) characters in result, space complexity is also O(a+b+c).
+
+
+class Solution:
+    def longestDiverseString(self, a: int, b: int, c: int) -> str:
+        result = [] # list of characters forming the happy string
+        remaining = Counter({'a':a,'b':b,'c':c,}) # freq dict of remaining characters
+        
+        # In each loop we update remaining and recompute 
+        (fence, _), (wedge, _) = remaining.most_common(2) # initial group
+        while remaining[fence] > 0 and remaining[wedge] > 0: # loop till no new groups could be formed
+            # add first fence
+            result.append(fence)
+            remaining[fence] -= 1
+
+            # (Optional) add second fence, if it wouldn't form triplet with first fence and last wedge
+            if len(result) >= 2 and result[-2] == fence:
+                pass
+            elif remaining[fence] > 0: # add second fence if any remaining
+                result.append(fence)
+                remaining[fence] -= 1
+            
+            # add wedge
+            result.append(wedge)
+            remaining[wedge] -= 1
+            
+            # recompute the fence and wedge char for next group
+            (fence, _), (wedge, _) = remaining.most_common(2)
+
+        # has remaining characters not consumed by loop, can append two maximum fences
+        if remaining[fence] > 0:
+            result.append(fence)
+            remaining[fence] -= 1
+            if remaining[fence] > 0:
+                result.append(fence)
+
+        return ''.join(result)
